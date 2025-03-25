@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 // src/services/api.js
 import axios from 'axios';
 import authService from './auth';
 
 // Create axios instance with default config
+const api_string = import.meta.env.VITE_API_URL;
 const api = axios.create({
-  baseURL:  'http://localhost:3000/api',
+  baseURL:  `http://${api_string}:3000/api`,
   headers: {
     'Content-Type': 'application/json'
   }
