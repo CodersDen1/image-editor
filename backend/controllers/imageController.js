@@ -7,6 +7,7 @@ const path = require('path');
 const sharp = require('sharp');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
+const exifReader = require('exif-reader');
 
 /**
  * Image Controller
@@ -93,7 +94,16 @@ class ImageController {
           error: uploadResult.error
         });
       }
-      
+      let exifData = null;
+        if (imageMetadata.exif) {
+            try {
+                 exifData = exifReader(imageMetadata.exif);
+                  } catch (exifError) {
+                console.error('Error parsing EXIF data:', exifError);
+                    // Handle invalid EXIF data gracefully
+                    }
+                  }
+
       // Create image record in database
       const image = new Image({
         userId: userId,
@@ -107,7 +117,7 @@ class ImageController {
         projectId: req.body.projectId || null,
         tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
         metadata: {
-          exif: imageMetadata.exif ? JSON.parse(imageMetadata.exif.toString()) : null,
+          exif: exifData,
           location: req.body.location ? {
             lat: parseFloat(req.body.location.lat),
             lng: parseFloat(req.body.location.lng)
@@ -234,6 +244,17 @@ class ImageController {
               error: uploadResult.error || 'Failed to upload to storage'
             };
           }
+
+
+          let exifData = null;
+              if (imageMetadata.exif) {
+                try {
+                 exifData = exifReader(imageMetadata.exif);
+                   } catch (exifError) {
+                      console.error('Error parsing EXIF data:', exifError);
+                    }
+                  }
+
           
           // Create image record in database
           const image = new Image({
@@ -248,7 +269,7 @@ class ImageController {
             projectId: req.body.projectId || null,
             tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
             metadata: {
-              exif: imageMetadata.exif ? JSON.parse(imageMetadata.exif.toString()) : null,
+              exif: exifData,
               location: req.body.location ? {
                 lat: parseFloat(req.body.location.lat),
                 lng: parseFloat(req.body.location.lng)
