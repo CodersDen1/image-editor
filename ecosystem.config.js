@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: "imagepro-backend",
+        name: "Imagepro-backend",
         script: "backend/server.js",
         cwd: "./",
         env: {
@@ -17,7 +17,7 @@ module.exports = {
         max_memory_restart: "500M"
       },
       {
-        name: "imagepro-frontend",
+        name: "Imagepro-frontend",
         script: "serve",
         cwd: "./frontend/build",
         args: "-s",
